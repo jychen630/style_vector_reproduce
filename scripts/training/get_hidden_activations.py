@@ -27,10 +27,12 @@ Path(PATH_TO_ACTIVATION_STORAGE).mkdir(parents=True, exist_ok=True)
 # select which device you want to use
 DEVICE = torch.device('cuda:1')
 # create the model 
+print("1")
 alpaca_model = transformers.AutoModelForCausalLM.from_pretrained(MODEL_PATH).to(DEVICE)
 alpaca_tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL_PATH)
 alpaca_model.to(DEVICE)
 
+print("2")
 # this function extracts the activation vectors for every layer during the forward pass of a prompt and saves them as .pkl files
 def process_dataset(dataset_name):
     df = []

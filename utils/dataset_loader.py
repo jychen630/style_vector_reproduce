@@ -7,8 +7,8 @@ from utils.data_prep import goemo_get_only_ekman
 #=================================================================#
 # We are using dataframes with the dataloader for the model. Therefore, we have to create these dataframes from the raw dataset files.
 ### ### ### PLEASE SPECIFY ### ### ###
-path_datasets = "/localdata1/EmEx/datasets/" # path to folder with loaded datasets
-path_dataframes = "/localdata1/EmEx/datasets/dataframes/" # path to save and load dataframes 
+path_datasets = "./datasets/" # path to folder with loaded datasets
+path_dataframes = "./datasets/dataframes/" # path to save and load dataframes 
 
 load_git = False # change to true, if you want missing repositories to be downloaded directly
 #=================================================================#

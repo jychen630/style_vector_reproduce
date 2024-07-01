@@ -43,7 +43,7 @@ pip install openpyxl
 
 We use three different datasets:
 1) Yelp Review Dataset: https://github.com/shentianxiao/language-style-transfer - `yelp`
-2) Shakespeare Dataset: https://github.com/harsh19/Shakespearizing-Modern-English.git  - `shakes`
+2) Shakespeare Dataset: https://gitxhub.com/harsh19/Shakespearizing-Modern-English.git  - `shakes`
 3) GoEmotion Dataset: https://huggingface.co/datasets/go_emotions - `GoEmo`
 
 They are processed and loaded using [dataset_loader.py](utils/dataset_loader.py).
