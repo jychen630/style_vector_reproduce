@@ -7,10 +7,10 @@ from utils.data_prep import goemo_get_only_ekman
 #=================================================================#
 # We are using dataframes with the dataloader for the model. Therefore, we have to create these dataframes from the raw dataset files.
 ### ### ### PLEASE SPECIFY ### ### ###
-path_datasets = "./datasets/" # path to folder with loaded datasets
-path_dataframes = "./datasets/dataframes/" # path to save and load dataframes 
+path_datasets = "./datasets" # path to folder with loaded datasets
+path_dataframes = "./datasets/dataframes" # path to save and load dataframes 
 
-load_git = False # change to true, if you want missing repositories to be downloaded directly
+load_git = True # change to true, if you want missing repositories to be downloaded directly
 #=================================================================#
 ### ### ### set up logger ### ### ###
 logger = logging.getLogger('dataset_logger')
@@ -36,7 +36,7 @@ def check_path(path): # check if the paths exists, else create
         print("created path "+ path)
     return path
 
-check_path(path_dataframes) # create the dataframe folder if it does not exist yet
+check_path(path_datasets) # create the dataframe folder if it does not exist yet
 
 
 #=================================================================#
@@ -65,9 +65,7 @@ def meta_load(fn, dsn, git):
     dataset_path = F"{path_datasets}/{filename}/"
     dataframe_path = F"{path_dataframes}/{dataset_name}"
     
-    if os.path.exists(dataframe_path): # if dataframe has been created before
-        df = pd.read_pickle(dataframe_path)
-    elif not os.path.exists(dataset_path): # if there is no dataframe and also no source data
+    if not os.path.exists(path_datasets): # if there is no dataframe and also no source data
         if load_git: 
             logging.warning("Git repository not available. Load from git.")
             os.system(F"git clone {git} {path_datasets}")
@@ -75,7 +73,7 @@ def meta_load(fn, dsn, git):
             logging.error(F'Dataset could not be found at {dataset_path}. Please download the data from the following repository to your local device. \nMake sure the stated path in dataset_loader.py is correct. Link: https://github.com/shentianxiao/language-style-transfer')    
             return False
     else: # if there is no dataframe but the source data could be found correctly                
-        dataset_files = glob.glob(F"{dataset_path}*")
+        dataset_files = glob.glob(F"datasets/data/yelp/*")
         yelp_dict = { # also valid for other datasets as yelp
             'sentiment.dev.0': ["dev", 0],
             'sentiment.dev.1': ["dev", 1],
@@ -89,7 +87,7 @@ def meta_load(fn, dsn, git):
         sentences = []
         for elem in tqdm(dataset_files, desc="Preparing dataset files and saving as pkl"): 
             
-            file = elem.replace(dataset_path, "")
+            file = os.path.basename(elem)
             if not "reference" in file:
                 for l in open(elem):
                     l = l.replace("\n", "") # remove new line
@@ -140,45 +138,45 @@ def load_goemo(only_ekman=True):
 def load_shakespeare():
     dataset_name = "shakespeare"
     git_link = "https://github.com/harsh19/Shakespearizing-Modern-English.git"
-    filename = "Shakespeare/Shakespearizing-Modern-English/data"
+    filename = "shakespeare/data"
 
     dataframe_path = F"{path_dataframes}/{dataset_name}"
-    dataset_path = F"{path_datasets}/{filename}/"
+    dataset_path = F"{path_dataframes}/{filename}/"
 
-    if os.path.exists(dataframe_path): # if dataframe has been created before
-        df = pd.read_pickle(dataframe_path)
-    elif not os.path.exists(dataset_path): # if there is no dataframe and also no source data
-        if load_git: 
-            logging.warning("Git repository not available. Load from git.")
-            os.system(F"git clone {git_link} {path_datasets}")
-        else:
-            logging.error(F'Dataset could not be found at {dataset_path}. Please download the data from the following repository to your local device. \nMake sure the stated path in dataset_loader.py is correct. Link: https://github.com/shentianxiao/language-style-transfer')    
-            return False
-    else: # if there is no dataframe but the source data could be found correctly                
-        structure = [
-            [F"{dataset_path}test.modern.nltktok", "test", "1"],
-            [F"{dataset_path}test.original.nltktok", "test", "0"],
-            [F"{dataset_path}train.modern.nltktok", "train", "1"],
-            [F"{dataset_path}train.original.nltktok", "train", "0"],
-            [F"{dataset_path}valid.modern.nltktok", "valid", "1"],
-            [F"{dataset_path}valid.original.nltktok", "valid", "0"]
-        ]
+    # if os.path.exists(dataframe_path): # if dataframe has been created before
+    #     df = pd.read_pickle(dataframe_path)
+    # elif not os.path.exists(dataset_path): # if there is no dataframe and also no source data
+    #     if load_git: 
+    #         logging.warning("Git repository not available. Load from git.")
+    #         os.system(F"git clone {git_link} {dataframe_path}")
+    #     else:
+    #         logging.error(F'Dataset could not be found at {dataset_path}. Please download the data from the following repository to your local device. \nMake sure the stated path in dataset_loader.py is correct. Link: https://github.com/shentianxiao/language-style-transfer')    
+    #         return False
+    # else: # if there is no dataframe but the source data could be found correctly                
+    structure = [
+        [F"{dataset_path}test.modern.nltktok", "test", "1"],
+        [F"{dataset_path}test.original.nltktok", "test", "0"],
+        [F"{dataset_path}train.modern.nltktok", "train", "1"],
+        [F"{dataset_path}train.original.nltktok", "train", "0"],
+        [F"{dataset_path}valid.modern.nltktok", "valid", "1"],
+        [F"{dataset_path}valid.original.nltktok", "valid", "0"]
+    ]
 
-        dataset = []
-        sentiment = []
-        sample = []
+    dataset = []
+    sentiment = []
+    sample = []
 
-        for elem in structure:
-            with open(elem[0], 'r') as file:
-                for l in file: 
-                    l = l.replace("\n", "") # remove new line
-                    dataset.append(elem[1])
-                    sentiment.append(elem[2])
-                    sample.append(l)
+    for elem in structure:
+        with open(elem[0], 'r') as file:
+            for l in file: 
+                l = l.replace("\n", "") # remove new line
+                dataset.append(elem[1])
+                sentiment.append(elem[2])
+                sample.append(l)
 
-        df = pd.DataFrame({"dataset": dataset, "sentiment": sentiment, "sample": sample})
-        df = df.drop_duplicates(subset=["sample"], keep="first")    # sentences should be unique
-        df.to_pickle(dataframe_path)
+    df = pd.DataFrame({"dataset": dataset, "sentiment": sentiment, "sample": sample})
+    df = df.drop_duplicates(subset=["sample"], keep="first")    # sentences should be unique
+    #df.to_pickle(dataframe_path)
     p_text = F'loaded dataset as pandas dataframe. It is a paired shakespeare dataset, comparing original texts (label 0) with the corresponding modern translations (label 1). It comprises N={df.shape[0]} samples. Information per sample are {df.columns}.'
     sysprint("Shakespeare", p_text)
     return df

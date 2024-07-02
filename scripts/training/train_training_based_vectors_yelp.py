@@ -41,6 +41,8 @@ def save_trained_steering_vector(steering_vector, target_sentence, final_loss, l
 
 
 df_yelp = dsl.load_yelp()
+print("================")
+print(df_yelp)
 # we filter out samples with a length over 50 due to time constraints. See Sec. 4.2 in our publication for more information
 df = df_yelp[df_yelp['sample'].str.len() < 50] 
 df = df.sample(n=6000)
