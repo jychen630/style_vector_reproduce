@@ -11,6 +11,7 @@ from utils.steering_layer import SteeringLayer
 from torch import cuda
 from pathlib import Path
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 load_dotenv()
 
@@ -51,10 +52,10 @@ df = df.sample(n=6000)
 
 # BOS TOKEN ID: 1
 # EOS TOKEN ID: 2
-tokenizer = LlamaTokenizer.from_pretrained(MODEL_PATH)
+tokenizer = LlamaTokenizer.from_pretrained("wxjiao/alpaca-7b")
 # print("Tokenizer loaded")
 
-model = LlamaForCausalLM.from_pretrained(MODEL_PATH, low_cpu_mem_usage=True)
+model = LlamaForCausalLM.from_pretrained("wxjiao/alpaca-7b", low_cpu_mem_usage=True)
 # print("Model loaded")
 
 model.to(DEVICE)
@@ -75,7 +76,7 @@ learning_rate = 0.01
 decayRate = 0.96
 num_tokens_to_predict = 50
 current_lr = learning_rate
-for index, row in df.iterrows():
+for index, row in tqdm(df.iterrows()):
     label = row["sentiment"]
     target = row["sample"] # row[5]
 
@@ -94,7 +95,8 @@ for index, row in df.iterrows():
         model.model.layers[insert_layer].mlp.reset_steering_vector()
         print(f"Initial Steering Vector: {model.model.layers[insert_layer].mlp.steering_vector}")
     # model.model.layers[INSERTION_LAYER].mlp.add_steering = True
-
+    
+    print("Done initializing steering vector.")
     loss_fn = nn.CrossEntropyLoss(reduction="mean")
     custom_layers = []
     for insert_layer in INSERTION_LAYERS:
@@ -104,14 +106,15 @@ for index, row in df.iterrows():
     
     current_bleu = 0
     epoch_of_extraction = 0
-    for current_epoch in range(0,EPOCHS):
+    print("Start walking through epochs.")
+    for current_epoch in tqdm(range(0,EPOCHS)):
         if current_epoch >= 1: current_bleu = BLEUscore
         overall_loss = 0
         target_tokens = tokenizer(target, return_tensors="pt").to(DEVICE)
         input_tokens = tokenizer("", return_tensors="pt").to(DEVICE)
         gen_tokens = []
 
-        for j in range(len(target_tokens.input_ids[0])-1):
+        for j in tqdm(range(len(target_tokens.input_ids[0])-1)):
             if j == 0:
                 model_output = model.forward(input_tokens.input_ids)
                 logits = model_output.logits

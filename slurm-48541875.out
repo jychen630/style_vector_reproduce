@@ -1,0 +1,22 @@
+Preparing dataset files and saving as pkl:   0%|          | 0/6 [00:00<?, ?it/s]Preparing dataset files and saving as pkl:  33%|███▎      | 2/6 [00:00<00:00, 18.76it/s]Preparing dataset files and saving as pkl:  83%|████████▎ | 5/6 [00:00<00:00, 15.71it/s]Preparing dataset files and saving as pkl: 100%|██████████| 6/6 [00:00<00:00, 12.43it/s]
+You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama.LlamaTokenizer'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565 - if you loaded a llama tokenizer from a GGUF file you can ignore this message
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+/ext3/miniconda3/lib/python3.12/site-packages/nltk/translate/bleu_score.py:552: UserWarning: 
+The hypothesis contains 0 counts of 2-gram overlaps.
+Therefore the BLEU score evaluates to 0, independently of
+how many N-gram overlaps of lower order it contains.
+Consider using lower n-gram order or use SmoothingFunction()
+  warnings.warn(_msg)
+/ext3/miniconda3/lib/python3.12/site-packages/nltk/translate/bleu_score.py:552: UserWarning: 
+The hypothesis contains 0 counts of 3-gram overlaps.
+Therefore the BLEU score evaluates to 0, independently of
+how many N-gram overlaps of lower order it contains.
+Consider using lower n-gram order or use SmoothingFunction()
+  warnings.warn(_msg)
+/ext3/miniconda3/lib/python3.12/site-packages/nltk/translate/bleu_score.py:552: UserWarning: 
+The hypothesis contains 0 counts of 4-gram overlaps.
+Therefore the BLEU score evaluates to 0, independently of
+how many N-gram overlaps of lower order it contains.
+Consider using lower n-gram order or use SmoothingFunction()
+  warnings.warn(_msg)
+slurmstepd: error: *** JOB 48541875 ON gr006 CANCELLED AT 2024-07-15T22:40:46 DUE TO TIME LIMIT ***
